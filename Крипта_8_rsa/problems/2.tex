@@ -1,0 +1,36 @@
+\begin{problem}
+    В криптосистеме RSA известны следующие данные:
+    \begin{enumerate}
+        \item $p = 89, \ q = 97$.
+        \item Открытая экспонента $e = 5$.
+        \item Зашифрованное сообщение: $c = 2789$.
+    \end{enumerate}
+    Найти:
+    \begin{enumerate}
+        \item Найдите секретный ключ $d$, используя информацию о $p$ и $q$.
+        \item Расшифруйте сообщение $c$ и определите исходное значение $m$.
+    \end{enumerate}
+\end{problem}
+\begin{solution}
+    Найдем $n$ и $\varphi(n)$: \( n = pq = 89 \cdot 97 = 8633 \) и \( \varphi(n) = (p - 1)(q - 1) = 88 \cdot 96 = 8448 \)
+    \begin{enumerate}
+        \item Найдем \(d = e^{-1} \mod \varphi(n) \):
+        \[
+            ed = 1 \quad ( \bmod \ 8448 )
+        \]
+        \[
+        5d = 1 \quad ( \bmod \ 8448 )
+        \]
+        \[
+        5d = 25345 \quad ( \bmod \ 8448 )
+        \]
+        \[
+        d = 5069 \quad ( \bmod \ 8448 )
+        \]
+        \item Расшифруем сообщение $c$:
+        \[
+            m = c^d = 2789^{5069} = 6605
+        \]
+        
+    \end{enumerate}
+\end{solution}

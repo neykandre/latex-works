@@ -1,0 +1,41 @@
+\begin{problem}
+    Пусть \(G = \mathbb{Z}_{29}^*\), \(g = 2\). Размер группы достаточен, чтобы закодировать все буквы латинского алфавита, а также пробел и точку. Закодируем их при помощи следующей таблицы:
+    \\\\
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|}
+        \hline
+        \textbf{a} & \textbf{b} & \textbf{c} & \textbf{d} & \textbf{e} & \textbf{f} & \textbf{g} & \textbf{h} & \textbf{i} & \textbf{j}
+        & \textbf{k} & \textbf{l} & \textbf{m} & \textbf{n} & \textbf{o} & \textbf{p} & \textbf{q} & \textbf{r} & \textbf{s} \\
+        \hline
+        1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 \\
+        \hline
+        \textbf{t} & \textbf{u} & \textbf{v} & \textbf{w} & \textbf{x} & \textbf{y} & \textbf{z} & & \textbf{.} &&&&&&&&&& \\
+        \hline
+        20 & 21 & 22 & 23 & 24 & 25 & 26 & 27 & 28 &&&&&&&&&& \\
+        \hline
+    \end{tabular}
+    \\\\
+    Вам прислали открытый ключ $g^b = 12$. Вы выбрали закрытый ключ $a = 10$, вычислили $g^a$ и послали в ответ. \\
+    Найдите общий секрет $s = g^{ab}$. Найдите $s^{-1}$. Расшифруйте сообщение, в котором каждый символ был умножен вашим корреспондентом на $s$, при помощи найденного вами $s^{-1}$:
+\[24, 9, 24, 11, 15, 28, 17, 2, 6, 28, 15, 25, 24, 11, 24, 11, 1.\]
+
+\end{problem}
+\begin{solution}
+    \[
+    s = g^{ab} = (g^b)^a = 12^{10} = 28
+    \]
+    Найдем обратный:
+    \[
+    ss^{-1} = 1 \quad (\text{mod} \ 29)\]
+    \[
+    28 s^{-1} = 1 \quad (\text{mod} \ 29) \]
+    \[
+    - s^{-1} = -28 \quad (\text{mod} \ 29)
+    \]
+    \[
+    s^{-1} = 28 \quad (\text{mod} \ 29)
+    \]
+    Расшифруем сообщение, домножив каждый элемент на $s^{-1}$:
+    \begin{center}
+        eternal wanderer.
+    \end{center}
+\end{solution}

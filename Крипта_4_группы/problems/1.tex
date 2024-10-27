@@ -1,0 +1,68 @@
+\begin{problem}
+    Какие из указанных множеств квадратных вещественных матриц фиксированного порядка образуют группу:
+    \begin{enumerate}[label=\alph*)]
+        \item Множество ненулевых матриц вида \(\begin{pmatrix}
+            x & y \\
+            \lambda y & x
+        \end{pmatrix}, \quad (x, y \in \mathbb{R})\), где \(\lambda\) -- фиксированное вещественное число, относительно умножения;
+
+        \item Множество всех ортогональных матриц относительно умножения.
+
+    \end{enumerate}
+
+\end{problem}
+\begin{solution}
+    \begin{enumerate}[label=\alph*)]
+        Пусть \(M = \left\{ \begin{pmatrix} x & y \\ \lambda y & x \end{pmatrix} \quad \vline \quad x, y \in \mathbb{R} \right\}\).
+        \item \begin{enumerate}[label=\arabic*)]
+            \item Корректность операции: \\
+            \( \forall \begin{pmatrix}
+                x_1 & y_1 \\
+                \lambda y_1 & x_1
+            \end{pmatrix}, \begin{pmatrix}
+                x_2 & y_2 \\
+                \lambda y_2 & x_2
+            \end{pmatrix} \in M \quad 
+            \begin{pmatrix}
+                x_1 & y_1 \\
+                \lambda y_1 & x_1
+            \end{pmatrix} \begin{pmatrix}
+                x_2 & y_2 \\
+                \lambda y_2 & x_2
+            \end{pmatrix} = \begin{pmatrix}
+                x_1 x_2 + \lambda y_1 y_2 & x_1 y_2 + y_1 x_2 \\
+                \lambda (y_1 x_2 + x_1 y_2) & x_1 x_2 + \lambda y_1 y_2
+            \end{pmatrix} \in M
+            \)
+            \item Ассоциативность: Из ассоциативности перемножения матриц.
+            \item Единица: \( \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} \in M \)
+            \item Обратный элемент:
+            \(
+            \forall \begin{pmatrix}
+                x & y \\
+                \lambda y & x
+            \end{pmatrix} \in M \quad
+            \begin{pmatrix}
+                x & y \\
+                \lambda y & x
+            \end{pmatrix}^{-1} = \dfrac{1}{x^2 - \lambda y^2}\begin{pmatrix}
+                x & -y \\
+                -\lambda y & x
+            \end{pmatrix} \in M
+            \)
+        \end{enumerate}
+        Все условия группы выполнены. Значит множество \(M\) -- группа.
+        
+        \item \(M = \left\{ Q \quad \vline \quad QQ^T = Q^TQ = E \right\}\) -- множество ортогональных матриц.
+        \begin{enumerate}[label=\arabic*)]
+            \item Корректность операции:
+            \( \forall A, B \in M \quad AB(AB)^T = ABB^TA^T = AA^T = E \Longrightarrow AB \in M
+            \)
+            \item Ассоциативность: Из ассоциативности перемножения матриц.
+            \item Единица: \( EE^T = E^TE = E \Longrightarrow E \in M \)
+            \item Обратный элемент: \( \forall A \in M \quad AA^T = A^TA = E \Longrightarrow A^{-1} = A^T \in M \)
+        \end{enumerate}
+
+        Все условия группы выполнены. Значит множество \(M\) -- группа.
+    \end{enumerate}
+\end{solution}

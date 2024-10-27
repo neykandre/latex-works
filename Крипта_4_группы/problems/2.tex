@@ -1,0 +1,25 @@
+\begin{problem}
+    Найти порядок элемента группы:
+    \begin{enumerate}[label=\alph*)]
+        \item \( \begin{pmatrix}
+            1 & 2 & 3 & 4 & 5 & 6 \\
+            2 & 3 & 4 & 5 & 1 & 6
+        \end{pmatrix} \in S_6\);
+        \item \( \dfrac{1}{2} - \dfrac{1}{2}i \in \mathbb{C}^* \).
+    \end{enumerate}
+\end{problem}
+\begin{solution}
+    \begin{enumerate}[label=\alph*)]
+        \item \( \sigma = \begin{pmatrix}
+            1 & 2 & 3 & 4 & 5 & 6 \\
+            2 & 3 & 4 & 5 & 1 & 6
+        \end{pmatrix} = (12345) \in S_6\) \\
+        ord \( \sigma \) = НОК(длин циклов) = НОК(5, 1) = 5
+        \item \(x =  \dfrac{1}{2} - \dfrac{1}{2}i = \dfrac{\sqrt{2}}{2} \left( \dfrac{\sqrt{2}}{2} - \dfrac{\sqrt{2}}{2}i \right) =
+        \dfrac{\sqrt{2}}{2} \left( \cos \dfrac{7 \pi}{4} + \sin \dfrac{7 \pi}{4} i \right)\) \\
+        \( x^n = \left( \dfrac{\sqrt{2}}{2} \left( \cos \dfrac{7 \pi}{4} + \sin \dfrac{7 \pi}{4} i \right) \right)^n =
+        \left( \dfrac{\sqrt{2}}{2} \right)^n \left( \cos \dfrac{7 \pi n}{4} + \sin \dfrac{7 \pi n}{4} i \right) \) \\
+        Для того, чтобы \(x^n = 1\), необходимо, чтобы выполнялось \(\left( \dfrac{\sqrt{2}}{2} \right)^n = 1 \Longleftrightarrow n \in \O \Longrightarrow \text{ord} \ x = \infty\)
+
+    \end{enumerate}
+\end{solution}

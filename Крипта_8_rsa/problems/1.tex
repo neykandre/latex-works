@@ -1,0 +1,21 @@
+\begin{problem}
+    Предположим, вы хотите отправить зашифрованное по RSA. Даны следующие параметры:
+    \begin{enumerate}
+        \item Простые числа $p = 101$, $q = 113$.
+        \item Открытая экспонента $e = 7$.
+        \item Сообщение, которое нужно зашифровать: $m = 567$.
+    \end{enumerate}
+    Найти:
+    \begin{enumerate}
+        \item Найдите модуль $n$ и функцию Эйлера $\varphi(n)$.
+        \item Зашифруйте сообщение $m$ и найдите зашифрованное
+        сообщение $c$. 
+    \end{enumerate}
+\end{problem}
+\begin{solution} \
+    \begin{enumerate}
+        \item \(n = pq = 101 \cdot 113 = 11413\) \\
+        \( \varphi(n) = (p - 1)(q - 1) = 100 \cdot 112 = 11200 \)
+        \item \(c = m^e = 567^7 = 3292 \)
+    \end{enumerate}
+\end{solution}

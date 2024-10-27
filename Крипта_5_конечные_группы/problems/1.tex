@@ -1,0 +1,82 @@
+\begin{problem}
+    Для алгоритма шифрования AES преобразовать байт 01100101 в обратный с помощью поля \(GF(2^8)\),
+    построенное на основе неприводимого многочлена \(x^8 + x^4 + x^3 + x + 1\).
+\end{problem}
+\begin{solution}
+    \[
+    f(x) = x^8 + x^4 + x^3 + x + 1
+    \]
+    \[
+    01100101 \longrightarrow x^6 + x^5 + x^2 + 1 = g(x)
+    \]
+    \[
+    \begin{array}{lll}
+        \arraycolsep=0.01em
+    \begin{array}{rrrrrr@{\,}r|l}
+            x^8 & +x^4 & +x^3 & +x & +1 &&&\, x^6 + x^5 + x^2 + 1 \\
+            \cline{7-7}
+            x^8 & +x^7 & +x^4 & +x^2  &&&&\, x^2 + x + 1 \\
+            \cline{1-4}
+            & x^7 & + x^3 & + x^2 & + x & + 1 \\
+            & x^7 & + x^6 & + x^3 & + x \\
+            \cline{2-5}
+            & & x^6 & + x^2 & + 1 \\
+            & & x^6 & + x^5 & + x^2 & + 1\\
+            \cline{3 - 6}
+            &&&x^5
+    \end{array}
+    & \quad &
+    \arraycolsep=0.01em
+    \begin{array}{rrrr@{\,}r|l}
+            x^6 & +x^5 & +x^2 & +1 &&\, x^5 \\
+            \cline{6-6}
+            x^6 & &  & &&\, x + 1 \\
+            \cline{1-1}
+            & x^5 & + x^2 & + 1 \\
+            & x^5 \\
+            \cline{2-2}
+            & & x^2 &+ 1
+    \end{array} \\\\
+
+    \arraycolsep=0.01em
+    \begin{array}{rrr@{\,}r|l}
+            x^5 & &  &&\, x^2 + 1 \\
+            \cline{5-5}
+            x^5 & + x^3 &  & &\, x^3 + x \\
+            \cline{1-2}
+            & x^3 \\
+            & x^3 & + x \\
+            \cline{2-3}
+            & & x
+    \end{array}
+    & \quad &
+    \arraycolsep=0.01em
+    \begin{array}{rrr@{\,}r|l}
+            x^2 & + 1 &&&\, x \\
+            \cline{5-5}
+            x^2 & &  & &\, x \\
+            \cline{1-1}
+            &1
+    \end{array} 
+    \end{array}
+    \]
+    \[
+    1 = x^2 + 1 + x \cdot x = x^2 + 1 + x (x^5 + (x^2 + 1)(x^3 + x)) = x \cdot x^5 + (x^2 + 1)(x^4 + x^2 + 1) =
+    x \cdot x^5 + (g(x) + x^5 ( x + 1))(x^4 + x^2 + 1) = 
+    \]
+    \[
+    = g(x) (x^4 + x^2 + 1) + x^5 (x + 1)(x^4 + x^2 + 1) + x \cdot x^5 = g(x) (x^4 + x^2 + 1) + x^5 (x^5 + x^4 + x^3 + x^2 + 1) =
+    \]
+    \[
+    = g(x) (x^4 + x^2 + 1) + (f(x) + g(x) (x^2 + x + 1)) (x^5 + x^4 + x^3 + x^2 + 1) = 
+    \]
+    \[
+    = f(x) (x^5 + x^4 + x^3 + x^2 + 1) + g(x) (x^7 + x^5 + x^2 + x)
+    \]
+    \[
+    \Downarrow
+    \]
+    \[
+    g(x)^{-1} =  x^7 + x^5 + x^2 + x \longrightarrow 10100110
+    \]
+\end{solution}
