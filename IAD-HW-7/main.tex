@@ -1,0 +1,45 @@
+\documentclass{article}
+% \usepackage{mathabx}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsthm, fancyhdr, color, comment, graphicx, environ, wrapfig}
+\usepackage{enumitem}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{float}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{stackrel}
+\graphicspath{ {./images/} }
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\linespread{1.6}
+\usepackage{tcolorbox}
+\usepackage[english,russian]{babel}
+
+\pagestyle{fancy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lhead{Андрей Носов}
+\rhead{БПИ232} 
+\chead{\textbf{Майнор ИАД. Базы данных. Домашнее задание 7}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{commands}
+
+\begin{document}
+
+\foreach \i in {1, ..., 4} {%
+    \input{problems/\i}%
+}
+
+\end{document}

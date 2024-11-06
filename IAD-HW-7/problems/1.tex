@@ -1,0 +1,44 @@
+\begin{problem}
+Для отношения (A,B,C,D,E,G) заданы функциональные зависимости: \\
+AB → C \\
+C → A \\
+BC → D \\
+ACD → B \\
+D → EG \\
+BE → C \\
+CG → BD \\
+CE → AG \\
+Постройте замыкание атрибутов (BD)+
+\end{problem}
+\begin{solution}
+    \((BD)+ = \{ B, D \}\)
+    \[
+    \begin{cases}
+        D \in (BD)+ \\
+        D \to EG
+    \end{cases} \Longrightarrow
+    \begin{cases}
+        E \in (BD)+ \\
+        G \in (BD)+
+    \end{cases}
+    \]
+    \((BD)+ = \{ B, D, E, G \}\)
+    \[
+    \begin{cases}
+        B \in (BD)+ \\
+        E \in (BD)+ \\
+        BE \to C
+    \end{cases} \Longrightarrow
+    C \in (BD)+
+    \]
+    \((BD)+ = \{ B, D, E, G, C \}\)
+    \[
+    \begin{cases}
+        C \in (BD)+ \\
+        C \to A
+    \end{cases} \Longrightarrow
+    A \in (BD)+
+    \]
+    \((BD)+ = \{ B, D, E, G, C, A \}\) \\
+    Далее замыкание \( (BD)+ \) изменяться не будет, так как там уже содержатся все атрибуты.
+\end{solution}

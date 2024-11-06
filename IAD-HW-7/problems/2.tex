@@ -1,0 +1,22 @@
+\begin{problem}
+    Дано отношение Заказы: \\
+    Order (ProductNo, ProductName, CustomerNo, CustomerName, OrderDate, UnitPrice, Quantity, SubTotal, Tax, Total) \\
+    Tax rate depends on the Product (e.g., 20\% for books or 30\% for luxury items).\\
+    Only one order per product and customer is allowed per day (several orders are combined). \\
+    A) Determine the non-trivial functional dependencies in the relation. \\
+    B) What are the key candidates?
+\end{problem}
+\begin{solution}
+    Нетривиальные зависимости:
+    \begin{itemize}
+        \item ProductNo \(\to\) \{ ProductName, UnitPrice, Tax \}
+        \item CustomerNo \(\to\) CustomerName
+        \item \{ ProductNo, CustomerNo, OrderDate \} \(\to\) \{ ProductName, CustomerName, UnitPrice, Quantity, SubTotal, Tax, Total \}
+        \item \{ UnitPrice, Quantity \} \(\to\) SubTotal
+        \item \{ SubTotal, Tax \} \(\to\) Total
+    \end{itemize}
+    Кандидаты: \\
+    \{ ProductNo, CustomerNo, OrderDate \}. В него входят все атрибуты, так как только один заказ для каждого продукта и клиента в день разрешен. \\
+    Это минимальная функциональная зависимость, так как, если выкинуть один из атрибутов \{ ProductNo, CustomerNo, OrderDate \}, замыкание не будет содержать все атрибуты отношения.
+    
+\end{solution}

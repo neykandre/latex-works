@@ -1,0 +1,39 @@
+\begin{problem}
+    Consider relation R(A,B,C,D) with the following functional dependencies: \\
+    F = {A→D, AB→ C, AC→ B} \\
+    A) What are all candidate keys? \\
+    B) Convert R into 3NF using synthesis algorithm from textbook.
+\end{problem}
+\begin{solution} \
+    \subsubsection*{Кандидаты:}
+    Построим замыкания для наборов атрибутов:
+    \begin{itemize}
+        \item \((A)+ = \{ A, D \} \)
+        \item \( (B)+ = \{ B \} \)
+        \item \( (C)+ = \{ C \} \)
+        \item \( (D)+ = \{ D \} \)
+        \item \((AB)+ = \{ A, B, C, D \} \)
+        \item \((AC)+ = \{ A, B, C, D \} \)
+        \item \((AD)+ = \{ A, D \} \)
+        \item \((BC)+ = \{ B, C \} \)
+        \item \((BD)+ = \{ B, D \} \)
+        \item \((CD)+ = \{ C, D \} \)
+    \end{itemize}
+    Нашли два кандидата: \( AB \) и \( AC \). Тройки, содержащие эти атрибуты рассматривать смысла нет, так как они не будут минимальными, а следовательно не будут кандидатами на ключ.
+    \begin{itemize}
+        \item \( (BCD)+ = \{ B, C, D \} \)
+    \end{itemize}
+    В замыкании этой оставшейся тройки не содержатся все атрибуты, а следовательно она не кандидат. Четверка ABCD не кандидат, так как она не минимальна. \\
+    Итого кандидаты: $AB, AC$
+    \subsubsection*{Конвертация в 3НФ:}
+    F уже является минимальным базисом, так как все зависимости минимальны. \\
+    Для каждой зависимости заведем отношение: 
+    \begin{itemize}
+        \item \( \mathcal{R}_A = AD \)
+        \item \( \mathcal{R}_{AB} = ABC \)
+        \item \( \mathcal{R}_{AC} = ABC \)
+    \end{itemize}
+    Заметим, что мы уже завели отношение для каждого из ключей \(AB, AC\). \\
+    Видим, что \(\mathcal{R}_{AC} \subseteq \mathcal{R}_{AB}\). Тогда уберем отношение \( \mathcal{R}_{AC} \). \\
+    Получили разложение \( \mathcal{R}_{A}, \mathcal{R}_{AC} \), каждое из которых удовлетворяет условиям 3НФ.
+\end{solution}

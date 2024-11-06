@@ -1,0 +1,81 @@
+\begin{problem}
+    Consider the relation Items(Vendor, Brand, Kind, Weight, Store) that represent a store stocks. \\
+    Convert sentences A)-C) from English text into a functional or a multi-valued dependencies.
+
+    [0.5pt] A) A Vendor holds the trademark for a brand (limited to item of a particular kind), so two different Vendors can't use the same brand name for items of the same kind.
+
+
+    [0.5pt] B) For each item kind, each store sells only single brand name made by each Vendor.
+
+
+    [0.5pt] C) If a particular item (vendor, brand name, and kind) is available in a particular weight at a store, then that weight is available at all stores carrying that item.
+
+
+    [0.5pt] D) Now assume that all the functional and/or multi-valued dependencies you specified does hold in Items, and no other dependencies hold in Items. What are the keys for Items?
+
+
+    [1pt] E) What normal forms does Items satisfy?
+
+
+    [1pt]F) Is this decomposition is lossless or not? Why?
+
+
+    Items1(Vendor, Brand, Kind, Store) 
+
+
+    Items2(Vendor, Brand, Kind, Weight)
+
+
+    [1pt] G) What normal forms does the decomposition in F) satisfy?
+
+
+    [1 pt] H) Decompose Items into a set of relations that are in BCNF such that the decomposition is lossless. Is this decomposition dependency-preserving?
+
+
+    [1pt] I) Find a lossless dependency-preserving decomposition of Items into 3NF using 3NF synthesis algorithm.
+\end{problem}
+\begin{solution} \
+    \begin{enumerate}[label=\Alph*)]
+        \item Если два поставщика не могут использовать одно и то же имя бренда для одного типа товара, то по паре брэнд и тип товара можно восстановить поставщика:
+        \[
+            \{ Brand, Kind \} \to Vendor
+        \]
+        \item Если в каждом магазине для каждого типа товара каждый поставщик продает только один брэнд, то брэнд зависит от поставщика, магазина и типа товара:
+        \[
+            \{ Vendor, Store, Kind \} \to Brand
+        \]
+        \item Вес товара не зависит от магазина, а только от поставщика, бренда и типа товара (многозначная зависимость):
+        \[
+            \{ Vendor, Brand, Kind \} \to \to Weight
+        \]
+        \item Кандидаты: \((Vendor, Store, Kind, Weight)\). По \( \{ Vendor, Store, Kind \} \) найдем \( Brand\). \\
+        Либо \( (Brand, Kind, Store, Weight) \). По \( \{ Brand, Kind \} \) найдем \( Vendor \). 
+        \item Соответсвует первой нормальной форме. Для второй не выполняется, так как \( Vendor \) зависит не минимально от ключа \( (Brand, Kind, Store, Weight) \), а только от \( Brand, Kind \).
+        \item Докажем по лемме:
+        \[
+            Items1 \cap Items2 = (Vendor, Brand, Kind)
+        \]
+        Но при этом $(Vendor, Brand, Kind)$ не является ключем ни в Items1, ни в Items2. То есть это не lossless decomposition.
+        \item Items1 соответсвует 4НФ, если ключ \( (Vendor, Store, Kind) \), так как тут нет многозначных зависимостей. Items2 первой нормальной формы, потому что ключ \( (Brand, Kind, Weight) \), при этом \(Vendor\) не минимально зависит от ключа, а только от \(Brand, Kind\).
+        \item Разобъем на следующие отношения по алгоритму:
+        \begin{itemize}
+            \item Сначала отщипим Items3 = \( \{ Brand, Kind, Vendor \} \) и оставим Items4 = \( \{ Brand, Kind, Weight, Store \} \).
+            \item Оказалось, что Items3 - BCNF, так как там одна зависимость \( (Brand, Kind) \to Vendor \) и \( (Brand, Kind) \) является ключом. А во втором отношении вообще нет зависимостей.
+        \end{itemize}
+        Получили отношения \( \mathcal{R}_1 = \{ Brand, Kind, Vendor \} \) и \( \mathcal{R}_2 = \{ Brand, Kind, Weight, Store \} \). При этом зависимости не сохранились, так как в разбиении осталась только зависимость \( (Brand, Kind) \to Vendor \).
+        \item По алгоритму:
+        \begin{itemize}
+            \item F (множество зависимостей) уже минимальный базис.
+            \item Создадим для каждой зависимости отношение: \( \mathcal{R}_1 = \{ Brand, Kind, Vendor \} \) и \\ \( \mathcal{R}_2 = \{ Vendor, Store, Kind, Brand \} \)
+            \item Создадим для какого-нибудь ключа отношение: \( \mathcal{R}_3 = \{ Kind, Store, Weight, Brand \} \) и \\ \( \mathcal{R}_4 = \{ Kind, Store, Weight, Vendor \} \)
+            \item Никакое из созданных отношений не является подмножеством другого. Значит это разбиение финальное.
+        \end{itemize}
+        \(\begin{array}{l}
+            \mathcal{R}_1 = \{ Brand, Kind, Vendor \} \\
+            \mathcal{R}_2 = \{ Vendor, Store, Kind, Brand \} \\
+            \mathcal{R}_3 = \{ Kind, Store, Weight, Brand \} \\
+            \mathcal{R}_4 = \{ Kind, Store, Weight, Vendor \}
+        \end{array}\) \\\\
+        Данное разбиение является lossless dependency-preserving и все в 3НФ так как осуществялось по synthesis algorithm.
+    \end{enumerate}
+\end{solution}
