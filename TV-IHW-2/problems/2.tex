@@ -1,0 +1,31 @@
+\begin{problem}
+Случайная величина имеет плотность распределения:
+\[
+    f_X(x) = \begin{cases}
+        2e^{-2x}, & x \geqslant 0 \\
+        0,        & x < 0
+    \end{cases}
+\]
+Найти функцию распределения \(F_Y(y)\) случайной величины \( Y = kX, \ k > 0 \)
+\end{problem}
+\begin{solution}
+    Найдем обратную функцию (\(x\) от \(y\)):
+    \[
+        y = kx \Longleftrightarrow x = \frac{y}{k}
+    \]
+    Найдем функцию плотности распределения СВ \(Y\):
+    \[
+        f_Y(y) = f_X\left(\tfrac{y}{k}\right) \cdot \left| \left(\frac{y}{k}\right)' \right| = \begin{cases}
+            \frac{2}{k} \cdot e^{-\frac{2y}{k}}, & y \geqslant 0 \\
+            0,                                  & y < 0
+        \end{cases}
+    \]
+
+    Получили эспоненциальное распределение с константой \(\frac{2}{k} \). Тогда функция распределения СВ \(Y\):
+    \[
+        F_Y(y) = \begin{cases}
+            1 - e^{-\frac{2y}{k}}, & y \geqslant 0 \\
+            0,                      & y < 0
+        \end{cases}
+    \]
+\end{solution}

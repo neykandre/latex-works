@@ -1,0 +1,49 @@
+\documentclass{article}
+% \usepackage{mathabx}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsthm, fancyhdr, color, comment, graphicx, environ, wrapfig}
+\usepackage{enumitem}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{patterns}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{float}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{stackrel}
+\graphicspath{ {./images/} }
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\linespread{1.6}
+\usepackage{tcolorbox}
+\usepackage[english,russian]{babel}
+
+\pagestyle{fancy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lhead{Андрей Носов}
+\rhead{БПИ232} 
+\chead{\textbf{Индивидуальное домашнее задание № 2. Вариант 15}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{commands}
+
+\begin{document}
+
+\foreach \i in {1, ..., 2} {%
+        \input{problems/\i}%
+    }
+
+\end{document}
