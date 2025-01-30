@@ -5,14 +5,19 @@
 
 % Подключение пакетов
 \usepackage[utf8]{inputenc} % Кодировка UTF-8
-\usepackage[russian]{babel} % Русский язык
-\usepackage{amsmath, amssymb} % Математические формулы
-\usepackage{graphicx} % Работа с графикой
+\usepackage[english,russian]{babel}
+\usepackage{amsmath, amssymb}
+
+% Настройка окружения для определений
+\newtheorem{define}{Определение}
+\newtheorem{Note}{Замечание}
+\newtheorem{claim}{Утверждение}
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
 
 % Информация о презентации
 \title[Математика разделенного секрета]{Математика разделенного секрета:\\ Пороговые (n,k)-схемы доступа,\\ схема Шамира и схема Блэкли}
 \author[Носов Андрей]{Носов Андрей БПИ-232}
-\date{\today}
+\date{}
 \institute{}
 
 \begin{document}
@@ -29,152 +34,632 @@
 
 % Раздел 1: Схема разделения секрета
 \section{Схема разделения секрета}
-\begin{frame}{Определение}
-    \begin{itemize}
-        \item Схема разделения секрета (СРС) — это криптографический протокол, позволяющий разделить секрет \( S \) на \( n \) долей \( S_1, S_2, \dots, S_n \), так что:
+\begin{frame}{Схема разделения секрета}
+    Пусть есть секрет и группа людей, между которыми нужно распределить этот секрет. Задача состоит в следующем. \\Нужно придумать, какую информацию предоставить каждому человеку, чтобы только <<разрешенные>> подгруппы могли восстановить секрет.
+    \begin{define}
+        \textbf{Схема разделения секрета (СРС)} --- способ распределения секрета среди группы участников, в котором
         \begin{itemize}
-            \item Любая подгруппа участников размером \( k \) или более может восстановить секрет.
-            \item Любая подгруппа из менее чем \( k \) участников ничего не знает о секрете.
+            \item каждому из участников достается своя некая \textbf{доля};
+            \item только разрешенные подмножества группы участников могут восстановить секрет.
         \end{itemize}
-    \end{itemize}
+    \end{define}
 \end{frame}
 
 % Раздел 2: Основные лица
-\section{Основные лица}
 \begin{frame}{Участники и дилер}
-    \begin{itemize}
-        \item **Дилер** — доверенное лицо, которое:
+    \begin{define}
+        В СРС выделяются следующие роли:
         \begin{itemize}
-            \item Генерирует секрет \( S \).
-            \item Вычисляет \( n \) долей \( S_1, S_2, \dots, S_n \).
-            \item Передаёт доли участникам.
+            \item \textbf{Дилер} --- доверенное лицо, которое
+            \begin{itemize}
+                \item Знает секрет \( s_0 \);
+                \item Вычисляет \( n \) долей \( s_1, s_2, \dots, s_n \);
+                \item Передает доли участникам.
+            \end{itemize}
+            \item \textbf{Участники} --- лица, получающие доли секрета. Они объединяются для восстановления секрета.
         \end{itemize}
-        \item **Участники** — лица, получающие доли секрета. Они объединяются для восстановления секрета.
-    \end{itemize}
+    \end{define}
+\end{frame}
+
+\begin{frame}{Математическая модель}
+    Зададим модель СРС следующим набором:
+    \begin{itemize}
+        \item Множества \( S_0, S_1, \dots, S_n \). \\
+        \(S_0\) --- множество секретов. \\ 
+        \(S_i \ (i = \overline{1, n})\) --- множество долей \(i\)-го участника.
+        \item Распределение вероятностей \(P\) на их декартовом произведении \(S = S_0 \times S_1 \times \dots \times S_n\).\\
+        Соответствующие случайные величины обозначим \(\xi_i\).
+        \item Множество \(\mathcal{A} \subseteq 2^{\underline{n}}\), называемое структурой доступа. \\Тогда любое множество \(A \in \mathcal{A}\) задает разрешенное подмножество группы участников.
+    \end{itemize} 
+\end{frame}
+
+\begin{frame}{Замечания}
+    \begin{define}
+        Участник \(x \in \{1, \dots, n\}\) называется \textbf{несущественным} для структуры доступа \(\mathcal{A}\), если 
+        \begin{itemize}
+            \item \(\forall A \not\in \mathcal{A} \Longrightarrow A \cup x \not\in \mathcal{A}\).
+        \end{itemize}
+    \end{define}
+    \begin{Note}
+        Очевидно, что несущественные участники настолько несущественны для разделения секрета, что им просто не нужно посылать никакой информации. Поэтому можно рассматривать только такие структуры доступа \(\mathcal{A}\), для которых все элементы являются существенными.
+    \end{Note}
+    \begin{Note}
+        Естественно полагать, что \(\mathcal{A}\) является монотонной структурой, т. е. \( \left.
+        \begin{array}{c}
+            A \subseteq B \\
+            A \in \mathcal{A}
+            \end{array} \right\} \Longrightarrow B \in \mathcal{A}\)
+    \end{Note}
 \end{frame}
 
 % Раздел 3: Sharing and Reconstruction
 \section{Sharing and Reconstruction}
 \begin{frame}{Функции разделения и восстановления секрета}
-    \begin{itemize}
-        \item **Функция разделения**:
+    В такой математической модели можно легко задать функции разделения и восстановления секрета.
+    \begin{define}
+        Функция разделения:
         \[
-        \text{Share}(S) \to \{S_1, S_2, \dots, S_n\}
+        \text{Share}: \ S_0 \to (S_1 \times \dots \times S_n)
         \]
-        Разбивает секрет \( S \) на \( n \) долей.
-        \item **Функция восстановления**:
+    \end{define}
+    \begin{define}
+        Функция восстановления:
         \[
-        \text{Reconstruct}(\{S_1, S_2, \dots, S_k\}) \to S
+        \text{Reconstruct}: \ (S_{i_1} \times \dots \times S_{i_m}) \to S_0
         \]
-        Объединяет \( k \) долей для получения оригинального секрета.
-    \end{itemize}
+    \end{define}
 \end{frame}
 
-% Раздел 4: Идеальная СРС
-\section{Идеальная СРС}
-\begin{frame}{Определение идеальной СРС}
-    \begin{itemize}
-        \item Идеальная схема разделения секрета:
-        \begin{itemize}
-            \item Доля каждого участника имеет тот же размер, что и секрет \( S \).
-            \item Участники не обладают избыточной информацией.
-        \end{itemize}
-    \end{itemize}
+\begin{frame}{Примитивная идея}
+    \begin{figure}
+    \centering
+    \includegraphics[width=0.65\linewidth]{2024_11_26_0hx_Kleki.png}
+\end{figure}
 \end{frame}
 
 % Раздел 5: Совершенная СРС
 \section{Совершенная СРС}
-\begin{frame}{Определение}
-    \begin{itemize}
-        \item Совершенная СРС:
-        \[
-        P(S | \text{меньше чем } k \text{ долей}) = P(S)
-        \]
-        \item Свойство «всё или ничего»: 
+\begin{frame}{Совершенная СРС}
+    \begin{define}
+        СРС, реализующая структуру доступа \(\mathcal{A}\), называется \textbf{совершенной}, если
         \begin{itemize}
-            \item Меньше \( k \) долей — нет информации о секрете.
-            \item \( k \) или больше долей — секрет полностью восстанавливается.
+            \item \(P(\xi_0 = x \ \vline \ \xi_i = s_i, i \in A) \in \{ 0, 1 \}\) \quad для \(A \in \mathcal{A}\)
+            \item \(P(\xi_0 = x \ \vline \ \xi_i = s_i, i \in A) = P(\xi_0 = x)\) \quad для \(A \not\in \mathcal{A}\)
         \end{itemize}
+    \end{define}
+    Это определение можно понять следующим образом:
+    \begin{itemize}
+        \item участники из разрешенного множества \(A\) (\(A \in \mathcal{A}\)) вместе могут однозначно восстановить значение секрета;
+        \item участники, образующие неразрешенное множество \(A\) (\(A \not\in \mathcal{A}\)),не получают никакой дополнительной информации о секрете. Т. е. вероятность того, что значение секрета \(\xi_0 = x\), не зависит от значений долей \(\xi_i, i \in A\). 
     \end{itemize}
+    Особый интерес с точки зрения безопасности вызывают СРС, обладающие данным свойством. Поэтому далее будем рассматривать только их.
+\end{frame}
+
+% Раздел 4: Идеальная СРС
+\section{Идеальная СРС}
+\begin{frame}{Идеальная СРС}
+    \begin{define}
+        \textbf{Идеальная СРС} — это схема, в которой доля каждого участника имеет тот же размер, что и секрет:
+        \[
+        |S_i| = |S_0|, \ \forall i = \overline{1, n}
+        \]
+    \end{define}
+\end{frame}
+
+\section{Простейшая структура доступа}
+\begin{frame}{Простейшая структура доступа}
+    Рассмотрим такую СРС, что только все участники вместе могут восстановить секрет, т. е. \(\mathcal{A} = \{ \{1, \dots, n \} \}\). \\
+    Пусть \(S_0 = S_1 = \dots = S_n = \mathbb{Z}_p\). \\
+    \begin{itemize}
+        \item Share: \\
+        Дилер генерирует значения долей для первых \(n - 1\) участников: \(s_1, \dots, s_{n - 1}\). \\
+        \(s_n\) вычисляется: \(s_n = s_0 - s_1 - \dots - s_{n - 1}\).
+        \item Reconstruct: \\
+        \(s_0 = s_1 + \dots + s_{n - 1} + s_n\)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Простейшая структура доступа}
+    \begin{claim}
+        Описанная СРС является идеальной и совершенной.
+    \end{claim}
+    Доказательство: Идеальность очевидна, т. к. \(S_0 = S_1 = \dots = S_n = \mathbb{Z}_p\) \\
+    Докажем совершенность. Нужно:
+    \begin{itemize}
+        \item \(P(\xi_0 = x \ \vline \ \xi_1 = s_1, \ \xi_2 = s_2, \dots, \xi_n = s_n) \in \{0,1\}\) \\
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) = P(\xi_0 = X)\) при \(k < n\)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Простейшая структура доступа}
+\begin{itemize}
+    \item 
+    \(P(\xi_0 = x \ \vline \ \xi_1 = s_1, \ \xi_2 = s_2, \dots, \xi_n = s_n) \in \{0, 1\}\)
+\end{itemize} \\ \ \\
+    Доказательство:
+    \[
+        P(\xi_0 = x \ \vline \ \xi_1 = s_1, \ \xi_2 = s_2, \dots, \xi_n = s_n) = 
+        \]
+        \[
+        = P(\xi_0 = x \ \vline \ \xi_1 = s_1, \ \xi_2 = s_2, \dots, \xi_0 - \xi_1 - \dots - \xi_{n - 1} = s_n) =
+        \]
+        \[
+        = P(x - s_1 - \dots - s_{n - 1} = s_n) = P(x = s_1 + \dots + s_n)
+        \]
+        Если \(s_1 + \dots + s_n = x\), то \(P = 1\); \\
+        Если \(s_1 + \dots + s_n \neq x\), то \(P = 0\). \\
+\end{frame}
+
+\begin{frame}{Простейшая структура доступа}
+    \begin{itemize}
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) = P(\xi_0 = x)\) при \(k < n\)
+    \end{itemize}
+    \\ \ \\
+    Доказательство: Для этого докажем, что \(P(\xi_i = x) = \frac{1}{p}, \ \forall i = \overline{0, n}\). Очевидно, что \(P(\xi_i = x) = \frac{1}{p}, \ \forall i = \overline{0, n - 1}\). \\Для \(\xi_n\):
+    \[P(\xi_n = x) = P(\xi_0 - \xi_1 - \dots - \xi_n = x) = P(\xi_0 = \xi_1 + \dots + \xi_{n-1} + x) = \]
+    \[
+    = \sum_{s_i \in \mathbb{Z}_p} P(\xi_1 = s_1, \dots, \xi_{n - 1} = s_{n-1}, \ \xi_0 = s_1 + \dots + s_{n -1 } + x) = 
+    \]
+    \[
+    = \sum_{s_i \in \mathbb{Z}_p} P(\xi_1 = s_1, \dots, \xi_{n - 1} = s_{n-1}) P(\xi_0 = s_1 + \dots + s_{n -1 } + x) = 
+    \]
+    \[
+    = \frac{1}{p} \sum_{s_i \in \mathbb{Z}_p} P(\xi_1 = s_1, \dots, \xi_{n - 1} = s_{n-1}) = \frac{1}{p} \cdot 1 = \frac{1}{p}
+    \]
+\end{frame}
+
+\begin{frame}{Простейшая структура доступа}
+Теперь нужно доказать, что \(\forall i = \overline{1, n} \ \ \xi_0, \xi_1, \dots, \xi_{i - 1}, \xi_{i + 1}, \dots, \xi_n\) независимы в совокупности. \\
+Очевидно, что \(\xi_0, \xi_1, \dots, \xi_{n - 1}\) независимы по построению. \\
+Необходимо доказать, что \(\forall i = \overline{1, n - 1} \ \ \xi_0, \xi_1, \dots, \xi_{i - 1}, \xi_{i + 1}, \dots, \xi_n\) независимы.
+    \[
+    P(\xi_0 = s_0, \xi_1 = s_1, \dots, \xi_{i - 1} = s_{i - 1}, \xi_{i + 1} = s_{i + 1}, \dots, \xi_n = s_n) = 
+    \]
+    \[
+    = P(\dots, \xi_0 - \xi_1 - \dots - \xi_{i - 1} - \xi_i - \xi_{i + 1} - \dots - \xi_{n - 1} = s_n) = 
+    \]
+    \[
+    = P(\dots, s_0 - s_1 - \dots - s_{i - 1} - \xi_i - s_{i + 1} - \dots - s_{n - 1} = s_n) = 
+    \]
+    \[
+    = P(\dots, \xi_i = s_0 - s_1 - \dots - s_{i - 1} - s_{i + 1} - \dots - s_n) = \left(\frac{1}{p}\right)^{n} = 
+    \]
+    \[
+    = P(\xi_0 = s_0) P(\xi_1 = s_1) \dots P(\xi_{i - 1} = s_{i - 1}) P(\xi_{i + 1} = s_{i + 1}) \dots  P(\xi_{n} = s_{n}) 
+    \]
+    
+\end{frame}
+
+\begin{frame}{Простейшая структура доступа}
+Так как \(\forall i = \overline{1, n} \ \ \xi_0, \xi_1, \dots, \xi_{i - 1}, \xi_{i + 1}, \dots, \xi_n\) независимы, то при \(k < n\)
+    \[
+    P(\xi_0 = x \ | \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) = P(\xi_0 = x)
+    \]
 \end{frame}
 
 % Раздел 6: (n,k)-пороговая СРС
 \section{(n,k)-пороговая СРС}
-\begin{frame}{Определение}
-    \begin{itemize}
-        \item \( (n, k) \)-пороговая схема:
+\begin{frame}{(n,k)-пороговая СРС}
+    \begin{define}
+        \( (n, k) \)-пороговая схема разделения секрета:
         \begin{itemize}
-            \item Секрет делится между \( n \) участниками.
-            \item Для восстановления секрета требуется \( k \) участников (\( k \leq n \)).
+            \item \(n\) участников;
+            \item \(\mathcal{A} = \{ K \subseteq \{1, \dots, n\} \ \vline \ |K| \geq k \}\).
         \end{itemize}
-    \end{itemize}
+    \end{define}
+    То есть любые \(k\) участников, собравшись вместе, могут восстановить секрет, а любые \(k - 1\) участников не получат никакой дополнительной информации о секрете. \\
+    \begin{Note}
+        Описанная ранее простейшая структура доступа соответствует \((n, n)\)-пороговой СРС.
+    \end{Note}
 \end{frame}
 
-% Раздел 7: Пример (n,n)-пороговой СРС
-\section{Пример с (n,n)-пороговой СРС}
-\begin{frame}{Пример}
+\begin{frame}{Начало}
     \begin{itemize}
-        \item Секрет делится на \( n \) долей, каждая из которых равна \( S \).
-        \item Доказательство:
-        \begin{itemize}
-            \item \( n \) участников объединяются и полностью восстанавливают секрет.
-            \item Менее \( n \) участников ничего не знают о секрете.
-        \end{itemize}
+        \item История СРС начинается с 1979 года, когда Ади Шамир и Джордж Блэкли независимо друг от друга предложили методы того, как составлять (n,k)-пороговые СРС.
     \end{itemize}
-\end{frame}
-
-% Раздел 8: Полином Лагранжа
-\section{Полином Лагранжа}
-\begin{frame}{Восстановление по \( k \) точкам}
-    \begin{itemize}
-        \item Полином степени \( k-1 \):
-        \[
-        f(x) = \sum_{i=1}^{k} y_i \prod_{j \neq i} \frac{x - x_j}{x_i - x_j}
-        \]
-        \item Используется для восстановления секрета \( f(0) \) по \( k \) точкам.
-    \end{itemize}
+    \begin{figure}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.612\linewidth]{shamir.jpg}
+        \caption{Ади Шамир}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{blakley.jpg}
+        \caption{Джордж Блэкли}
+    \end{minipage}
+    \end{figure}
+    
 \end{frame}
 
 % Раздел 9: Схема Шамира
 \section{Схема Шамира}
-\begin{frame}{Описание}
+\begin{frame}{Схема Шамира}
+    Ади Шамир предложил следующую СРС. \\
+    Сопоставим участникам \(n\) различных чисел \(x_1, \dots, x_n \in \mathbb{F}_q\) и положим \(x_0 = 0\).
     \begin{itemize}
-        \item Генерация случайного полинома степени \( k-1 \):
+        \item Share: \\
+        Дилер генерирует \(k - 1\) чисел \(a_i, i = \overline{1, k - 1}\). \(a_0\) полагается равным \(s_0\). Составляет многочлен:
         \[
-        f(x) = a_0 + a_1x + \dots + a_{k-1}x^{k-1}
+        f(x) = a_0 + a_1x + \dots + a_{k - 1}x^{k - 1}
         \]
-        где \( a_0 \) — секрет.
-        \item Доли: точки \( (x_i, f(x_i)) \), \( x_i \neq 0 \).
-        \item Доказательства:
-        \begin{itemize}
-            \item Совершенность: \( k-1 \) долей не дают информацию о \( a_0 \).
-            \item Идеальность: размер долей равен размеру секрета.
-        \end{itemize}
+        И посылает \(i\)-му участнику его долю \(s_i = f(x_i)\).
+        \item Reconstruct: \\
+        Любые \(k\) участников собираются вместе и по \(k\) точкам восстанавливают многочлен \(f(x)\), т. к. \(\text{deg}(f) = k - 1\). \\Например, через интерполяционный многочлен Лагранжа или через решение СЛАУ. \\
+        Затем находят \(s_0 = f(0)\).
+        
     \end{itemize}
+\end{frame}
+
+\begin{frame}{Схема Шамира}
+    Визуализация для \(k = 4\):
+    \begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{shamir_sceme.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Схема Шамира. Пример}
+    Интерполяционный многочлен Лагранжа степени не больше \(n\) по \(n + 1\) точкам: \[L_n(x) = \sum_{i = 0}^n y_i \left( \prod_{j = 0, j \neq i}^n \frac{x - x_j}{x_i - x_j}\right)\]
+    Пример восстановления секрета:\\ Реализована \((n, 3)\)-пороговая СРС Шамира. \\
+    Алисе соответсвует число 1, Бобу --- 2, Еве --- 3. \\
+    Доля Алисы --- 2, доля Боба --- 3, доля Евы --- 5. \\
+    Восстановление многочлена: \[L_2(x) = 2 \cdot \frac{x - 2}{1 - 2} \cdot \frac{x - 3}{1 - 3} + 3 \cdot \frac{x - 1}{2 - 1} \cdot \frac{x - 3}{2 - 3} + 5 \cdot \frac{x - 1}{3 - 1} \cdot \frac{x - 2}{3 - 2} \]
+    Найдем секрет: \[
+        L_2(0) = 2 \cdot \frac{-2}{-1} \cdot \frac{-3}{-2} + 3 \cdot \frac{-1}{1} \cdot \frac{-3}{-1} + 5 \cdot \frac{-1}{2} \cdot \frac{-2}{1} = 2
+    \]
+    
+    
+\end{frame}
+
+\section{Идеальность}
+\begin{frame}{Схема Шамира}
+    \begin{claim}
+        Схема Шамира является идеальной СРС.
+    \end{claim}
+    Доказательство: \(\forall i = \overline{1, n} \ |S_i| = |\mathbb{F}_q| = |S_0|\).
+\end{frame}
+
+\section{Совершенность}
+\begin{frame}{Схема Шамира}
+    \begin{claim}
+        Схема Шамира является совершенной СРС.
+    \end{claim}
+    Доказательство: Нужно
+    \begin{itemize}
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) \in \{ 0, 1 \} \); \\
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_t} = s_{i_t}) = P(\xi_0 = x) \) при \(t < k\).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Схема Шамира}
+    \begin{itemize}
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) \in \{ 0, 1 \} \)
+    \end{itemize}
+    Запишем систему уравнений относительно неизвестных \(a_0, \dots, a_{k - 1}\):
+    \[
+    \begin{cases}
+        s_{i_1} = a_0 + a_1x_{i_1} + \dots + a_{k - 1}x_{i_1}^{k - 1} \\
+        \vdots \\
+        s_{i_k} = a_0 + a_1x_{i_k} + \dots + a_{k - 1}x_{i_k}^{k - 1} \\
+    \end{cases}
+    \]
+    Перепишем в матричном виде:
+    \[
+    \begin{pmatrix}
+        s_{i_1} \\ \vdots \\ s_{i_k}
+    \end{pmatrix} = \begin{pmatrix}
+        1 & x_{i_1} & \dots & x_{i_1}^{k - 1} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        1 & x_{i_k} & \dots & x_{i_k}^{k - 1}
+    \end{pmatrix} \begin{pmatrix}
+        a_0 \\ \vdots \\ a_{k - 1}
+    \end{pmatrix}
+    \]
+\end{frame}
+
+\begin{frame}{Схема Шамира}
+\begin{itemize}
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) \in \{ 0, 1 \} \)
+    \end{itemize}
+    \[
+    \begin{pmatrix}
+        s_{i_1} \\ \vdots \\ s_{i_k}
+    \end{pmatrix} = \begin{pmatrix}
+        1 & x_{i_1} & \dots & x_{i_1}^{k - 1} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        1 & x_{i_k} & \dots & x_{i_k}^{k - 1}
+    \end{pmatrix} \begin{pmatrix}
+        a_0 \\ \vdots \\ a_{k - 1}
+    \end{pmatrix}
+    \]
+    Определитель матрицы Вандермонда не равен 0 \(\Longrightarrow\) есть единственное решение \( \Longrightarrow\) можем найти это единственной решение \((a_0, \dots, a_{k - 1})^T\) \(\Longrightarrow\) можем найти секрет \(s_0 = a_0\). \\
+    Тогда для рассматриваемой вероятности будет верно:
+    \[
+    P(\xi_0 = x \ | \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) = P(\xi_0 = x \ | \ \xi_0 = s_0) = 
+    \]
+    \[
+    = P(x = s_0) \in \{ 0, 1 \}
+    \]
+\end{frame}
+
+\begin{frame}{Схема Шамира}
+    \begin{itemize}
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_t} = s_{i_t}) = P(\xi_0 = x) \) при \(t < k\).
+    \end{itemize}
+    Докажем, что \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_{k - 1}} = s_{i_{k - 1}}) = P(\xi_0 = x)\). \\ \ \\
+    Зная \(k - 1\) точек \((x_{i_1}, s_{i_1}), \dots, (x_{i_{k - 1}}, s_{i_{k - 1}})\), через которые проходит многочлен \(f(x)\) степени \(k - 1\), можно для каждого значения секрета \(s_0 = f(0)\) построить ровно один многочлен \(f(x)\). \\
+    Значит даже зная, что \(\xi_{i_j} = s_{i_j}\), \ СВ \(\xi_0\) распределена равномерно на всем поле \(\mathbb{F}_q\).
+    
 \end{frame}
 
 % Раздел 10: Схема Блэкли
 \section{Схема Блэкли}
-\begin{frame}{Описание}
+\begin{frame}{Схема Блэкли}
+    Джордж Блэкли предложил следующую СРС. \\
     \begin{itemize}
-        \item Использует систему линейных уравнений:
+        \item Share:
+        Дилер генерирует \(k - 1\) число \(b_1, \dots, b_{k - 1} \in \mathbb{F}_q\) и задает точку в \(k\)-мерном пространстве с координатами \((s_0, b_1, \dots, b_{k - 1})\). \\Для каждого участника он составляет уравнение гиперплоскости, которая проходит через заданную точку. Для этого дилер для \(i\)-го участника генерирует \(k\) чисел \(a_{i_1}, \dots, a_{i_k} \in \mathbb{F}_q\).
+        Так как уравнение плоскости имеет вид
+        \(
+        a_{i_1}x_1 + a_{i_2}x_2 + \dots + a_{i_k}x_k + d_i = 0
+        \), то для каждого участника необходимо еще вычислить \(d_i\):
         \[
-        A \cdot X = B
+        \begin{smallmatrix}
+             d_1 = - (a_{1_1}s_0 + a_{1_2}b_1 + \dots + a_{1_k}b_{k-1}) \\
+             \vdots \\
+             d_i = - (a_{i_1}s_0 + a_{i_2}b_1 + \dots + a_{i_k}b_{k-1}) \\
+             \vdots \\
+             d_n = - (a_{n_1}s_0 + a_{n_2}b_1 + \dots + a_{n_k}b_{k-1}) \\
+        \end{smallmatrix}
         \]
-        где \( A \) — матрица коэффициентов, \( X \) — вектор секретов, \( B \) — вектор долей.
-        \item Пример для 3D:
-        \includegraphics[width=0.8\textwidth]{3d-example.png} % Вставьте подходящую картинку
+        Доля \(i\)-го участника задается вектором \(s_i = (a_{i_1}, \dots, a_{i_k}, d_i)\).
     \end{itemize}
 \end{frame}
 
-% Заключение
-\section{Заключение}
-\begin{frame}{Заключение}
+\begin{frame}{Схема Блэкли}
     \begin{itemize}
-        \item СРС — важный инструмент для безопасного хранения данных.
-        \item Различные схемы применяются в зависимости от задач.
-        \item Перспективы: улучшение устойчивости и эффективность вычислений.
+        \item Reconstruct: \\
+        Любые \(k\) участников собираются вместе и по уравнениям \(k\) плоскостей однозначно восстанавливают точку, которая принадлежит всем плоскостям. \\
+        Первая координата точки --- секрет.
     \end{itemize}
+\end{frame}
+
+\begin{frame}{Схема Блэкли}
+    Визуализация для \(k = 3\):
+    \begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{blakely_scheme.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Схема Блэкли. Пример}
+    Реализована \((n, 3)\)- пороговая СРС Блэкли. \\
+    Уравнение Алисы: \(2x + 3y + z - 17 = 0\) \\
+    Уравнение Боба: \(x - y + 4z - 15 = 0\) \\
+    Уравнение Евы: \(5x + 2y - z - 12 = 0\) \\
+    Восстановление точки: \[
+    \begin{cases}
+        2x + 3y + z - 17 = 0 \\
+        x - y + 4z - 15 = 0 \\
+        5x + 2y - z - 12 = 0
+    \end{cases} \longrightarrow \begin{pmatrix}
+        2 & 3 & 1 & \vline & 17 \\
+        1 & -1 & 4 & \vline & 15 \\
+        5 & 2 & -1 & \vline & 12
+    \end{pmatrix} \longrightarrow 
+    \]
+    \[
+    \longrightarrow \begin{pmatrix}
+        1 & 0 & 0 & \vline & 2 \\
+        0 & 1 & 0 & \vline & 3 \\
+        0 & 0 & 1 & \vline & 4
+    \end{pmatrix}
+    \]
+    Секрет --- первая координата точки, т. е. 2.
+\end{frame}
+
+\begin{frame}{Схема Блэкли}
+    \begin{Note}
+        Схема Блэкли не является идеальной СРС, так как \(\forall i = \overline{1, n} \ \ |S_i| = |\mathbb{F}_q|^{k + 1} \neq |\mathbb{F}_q| = |S_0|\).
+    \end{Note}
+\end{frame}
+
+\begin{frame}{Схэма Блэкли}
+    Обозначим \(
+         h_0 = (1, \dots, 0) \in \mathbb{F}_q^k, \ 
+         h_i = (a_{i_1}, \dots, a_{i_k}) \ i = \overline{1, n}\). \\ \ \\
+    Для того, чтобы СРС была совершенной дилер должен следить за следующими условиями:
+    \begin{itemize}
+        \item Любые \(k\) векторов \(h_{i_i}, \dots, h_{i_{k}}\) должны быть ЛНЗ. \\
+        Необходимо для того, чтобы по любым \(k\) восстановить секрет.
+        \item Для любых \(k - 1\) векторов \(h_{i_i}, \dots, h_{i_{k - 1}}\) вектор \(h_0\) не должен лежать в \(\langle h_{i_i}, \dots, h_{i_{k - 1}} \rangle\). \\
+        Необходимо для того, чтобы любые \(k - 1\) участников не получали никакой дополнительной информации о секрете.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Схема Блэкли}
+    \begin{claim}
+        Схэма Блэкли является совершенной СРС.
+    \end{claim}
+    \begin{itemize}
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) \in \{ 0, 1 \} \); \\
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_t} = s_{i_t}) = P(\xi_0 = x) \) при \(t < k\).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Схема Блэкли}
+    \begin{itemize}
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) \in \{ 0, 1 \} \).
+    \end{itemize}
+    Запишем СЛАУ:
+    \[
+    \begin{cases}
+        a_{i_1_1}x_1 + a_{i_1_2}x_2 + \dots + a_{i_1_k}x_{k} + d_{i_1} = 0 \\
+        \vdots \\
+        a_{i_k_1}x_1 + a_{i_k_2}x_2 + \dots + a_{i_k_k}x_{k} + d_{i_k} = 0 \\
+    \end{cases}
+    \]
+    Так как все строки ЛНЗ, то существует решение и ровно одно. Это решение \((s_0, b_1, \dots, b_{k - 1})\). Тогда 
+    \[
+    P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_k} = s_{i_k}) = P(\xi_o = x \ \vline \ \xi_0 = s_0) =
+    \]
+    \[
+    = P(x = s_0) \in \{0, 1\}
+    \]
+\end{frame}
+
+\begin{frame}{Схема Блэкли}
+    \begin{itemize}
+        \item \(P(\xi_0 = x \ \vline \ \xi_{i_1} = s_{i_1}, \dots, \xi_{i_t} = s_{i_t}) = P(\xi_0 = x) \) при \(t < k\).
+    \end{itemize}
+    Запишем СЛАУ в матричном виде:
+    \[
+    \resizebox{4cm}{1cm}{\left( \begin{array}{| c |}
+        \hline \\
+        h_{i_1} \\
+        \hline \quad \quad \quad \quad \quad \quad\\
+        \vdots \\
+        \hline \\
+        h_{i_{t}} \\
+        \hline
+    \end{array} \right) \begin{pmatrix}
+        x_1 \\ \vdots \\ x_k
+    \end{pmatrix} = \begin{pmatrix}
+        -d_{i_1} \\ \vdots \\ -d_{i_k}
+    \end{pmatrix}
+    }
+    \]
+    Допишем уравнение для \(h_0\) с соответствующим значением \(x\):
+    \[
+    \resizebox{4cm}{1.3cm}{\left( \begin{array}{| c |}
+        \hline \\ 
+        h_0 \\
+        \hline \\
+        h_{i_1} \\
+        \hline \quad \quad \quad \quad \quad \quad\\
+        \vdots \\
+        \hline \\
+        h_{i_{t}} \\
+        \hline
+    \end{array} \right) \begin{pmatrix}
+        x_1 \\ \vdots \\ x_k
+    \end{pmatrix} = \begin{pmatrix}
+        x \\ -d_{i_1} \\ \vdots \\ -d_{i_k}
+    \end{pmatrix}
+    }
+    \]
+\end{frame}
+
+\begin{frame}{Схема Блэкли}
+\[
+    \resizebox{4cm}{1.3cm}{\left( \begin{array}{| c |}
+        \hline \\ 
+        h_0 \\
+        \hline \\
+        h_{i_1} \\
+        \hline \quad \quad \quad \quad \quad \quad\\
+        \vdots \\
+        \hline \\
+        h_{i_{t}} \\
+        \hline
+    \end{array} \right) \begin{pmatrix}
+        x_1 \\ \vdots \\ x_k
+    \end{pmatrix} = \begin{pmatrix}
+        x \\ -d_{i_1} \\ \vdots \\ -d_{i_k}
+    \end{pmatrix}
+    }
+    \]
+    Так как \((h_0, h_{i_1}, \dots, h_{i_{t})}\) --- ЛНЗ, то система совместна для любого \(x\). \\
+    При этом для любого \(x\) количество решений неоднородной СЛАУ равно количеству решений ОСЛАУ, то есть не зависит от \(x\). То есть распределение секрета не изменилось.
+\end{frame}
+
+\begin{frame}{Обобщение}
+    Выпишем в матричном виде системы для схемы Шамира \\ и для схемы Блэкли:
+    \[
+    \resizebox{5cm}{1cm}{ \begin{pmatrix}
+        1 & 0 & \dots & 0 \\
+        1 & x_1 & \dots & x_1^{k - 1} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        1 & x_n & \dots & x_n^{k - 1}
+    \end{pmatrix} \begin{pmatrix}
+        a_0 \\ \vdots \\ a_{k - 1}
+    \end{pmatrix} = \begin{pmatrix}
+        s_0 \\ \vdots \\ s_n
+    \end{pmatrix}
+    } \quad \quad \quad \quad 
+    \resizebox{5cm}{1cm}{ \begin{pmatrix}
+        1 & 0 & \dots & 0 \\
+        a_{1_1} & a_{1_2} & \dots & a_{1_k} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        a_{n_1} & a_{n_2} & \dots & a_{n_k} \\
+    \end{pmatrix} \begin{pmatrix}
+        x_1 \\ \vdots \\ x_k
+    \end{pmatrix} = \begin{pmatrix}
+        s_0 \\ -d_{1_1} \\ \vdots \\ -d_{n_k}
+    \end{pmatrix}
+    }
+    \]
+    Видно, что во многом эти схемы схожи, у них отличается только матрица. \\
+    Давайте обозначим матрицу \(H\) с векторами строками \(h_0, h_1, \dots, h_n\), \\
+    неизвестный вектор столбец -- \(x\), \\
+    известный вектор столбец -- \(s\). \\
+    Тогда оба этих уравнения переписываются в виде \(Hx = s\).
+\end{frame}
+
+\begin{frame}{Линейная СРС}
+    \(Hx = s\) \\
+    А что будет, если в качестве матрицы \(H\) взять какую-то случайную? \\
+    \begin{define}
+    Получим \textbf{линейную СРС}. В ней:
+    \begin{itemize}
+        \item множество индексов \(\{ i_1, \dots, i_m \} \in \mathcal{A}\) (является разрешенным), если \(h_0 \in \langle h_{i_1}, \dots, h_{i_m} \rangle \);
+        \item множество индексов \(\{ i_1, \dots, i_l \} \not\in \mathcal{A}\) (не является разрешенным), если \(h_0 \not\in \langle h_{i_1}, \dots, h_{i_m} \rangle \);
+        \item \(s_i\) --- доля \(i\)-го участника;
+        \item \(s_i = (h_0, x)\) --- секрет.
+    \end{itemize}
+    \end{define}
+    
+    \begin{Note}
+        Доказательство совершенности схэмы Блэкли обобщается на случай линейной СРС. Таким образом все линейные СРС совершенны.
+    \end{Note}
+\end{frame}
+
+% Заключение
+\section{Задачи}
+\begin{frame}{Задачи}
+    \begin{center}
+        Вариант 1
+    \end{center}
+    \begin{enumerate}
+        \item Выступая в роли дилера, разделите секрет \(s_0 = 22\) в \(\mathbb{F}_{29}\), реализовав \((5, 3)\)-пороговую СРС с помощью
+        \begin{enumerate}
+            \item алгоритма Шамира
+            \item алгоритма Блэкли
+        \end{enumerate}
+        \item Реализована \((n, 3)\)-пороговая СРС Шамира в \(\mathbb{F}_{29}\). \\
+        Алисе соответсвует число 1, Бобу --- 2, Еве --- 3. \\
+        Доля Алисы --- 7, доля Боба --- 26, доля Евы --- 11. \\
+        Воспроизведите процесс восстановления секрета Алисой, Бобом и Евой.
+    \end{enumerate}
+\end{frame}
+
+\section{Задачи}
+\begin{frame}{Задачи}
+    \begin{center}
+        Вариант 2
+    \end{center}
+    \begin{enumerate}
+        \item Выступая в роли дилера, разделите секрет \(s_0 = 7\) в \(\mathbb{F}_{29}\), реализовав \((5, 3)\)-пороговую СРС с помощью
+        \begin{enumerate}
+            \item алгоритма Шамира
+            \item алгоритма Блэкли
+        \end{enumerate}
+        \item Реализована \((n, 3)\)-пороговая СРС Шамира в \(\mathbb{F}_{29}\). \\
+        Алисе соответсвует число 1, Бобу --- 2, Еве --- 3. \\
+        Доля Алисы --- 9, доля Боба --- 3, доля Евы --- 23. \\
+        Воспроизведите процесс восстановления секрета Алисой, Бобом и Евой.
+    \end{enumerate}
 \end{frame}
 
 % Последний слайд
@@ -184,3 +669,4 @@
 \end{frame}
 
 \end{document}
+
